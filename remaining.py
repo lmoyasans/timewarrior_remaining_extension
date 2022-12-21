@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Percentage - Timewarrior report remaining work hours per week and month
-Author: Miguel Crespo
+Author: Miguel Crespo and Lucia Moya-Sans
 Usage:
 timew remaining
 """
@@ -70,9 +70,9 @@ def parse(input_stream: TextIO) -> ParsedData:
             sum_total += duration
             tag_name = session['tags'][0]
             tags[tag_name] += duration
-    return totals, tags, sum_total, float(HOURS_PER_DAY)
+    return totals, tags, sum_total, float(HOURS_PER_DAY), config
 
-def print_data(data, sum_total, HOURS_PER_DAY, offset=10):
+def print_data(data, sum_total, HOURS_PER_DAY, config, offset=10):
     DAYS_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     now = datetime.now()
     days_month = calendar.monthcalendar(now.year, now.month)
@@ -96,7 +96,7 @@ def print_data(data, sum_total, HOURS_PER_DAY, offset=10):
                 else:
                     d = '0'
             print(d.center(offset), end='')
-        work_week = sum([1 for i in week[:-2] if i != 0])
+        work_week = sum([1 for i in week[:-2] if i != 0 and not 'exclusions.days.' + str(now.year) + '_' + str(now.month) + '_' + "{0:0=2d}".format(i) in config.keys()])
         total_week = sum_week - HOURS_PER_DAY * work_week
         print('| {0:0.3f}'.format(total_week))
         sum_month += sum_week
@@ -105,6 +105,6 @@ def print_data(data, sum_total, HOURS_PER_DAY, offset=10):
     print(f'Total {sum_month:0.3f} Remaining {remaining_month:0.3f}')
 
 if __name__ == "__main__":
-    data, tags, sum_total, HOURS_PER_DAY = parse(sys.stdin)
+    data, tags, sum_total, HOURS_PER_DAY, config = parse(sys.stdin)
     calendar.setfirstweekday(calendar.MONDAY)
-    print_data(data, sum_total, HOURS_PER_DAY)
+    print_data(data, sum_total, HOURS_PER_DAY, config)
