@@ -96,7 +96,7 @@ def print_data(data, sum_total, HOURS_PER_DAY, config, offset=10):
                 else:
                     d = '0'
             print(d.center(offset), end='')
-        work_week = sum([1 for i in week[:-2] if i != 0 and not 'exclusions.days.' + str(now.year) + '_' + str(now.month) + '_' + "{0:0=2d}".format(i) in config.keys()])
+        work_week = sum([1 for i in week[:-2] if i != 0 and not 'exclusions.days.' + str(now.year) + '_' + "{0:0=2d}".format(now.month) + '_' + "{0:0=2d}".format(i) in config.keys()])
         total_week = sum_week - HOURS_PER_DAY * work_week
         print('| {0:0.3f}'.format(total_week))
         sum_month += sum_week
