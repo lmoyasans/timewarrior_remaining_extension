@@ -47,7 +47,7 @@ def parse(input_stream: TextIO) -> ParsedData:
         error_and_exit("This report only works without tags.")
     
     if not "remaining.hours_per_day" in config:
-        error_and_exit(f'Please use "timewarrior config hours_per_day HOURS" to add to the configuration file the desired quantity')
+        error_and_exit(f'Please use "timew config remaining.hours_per_day HOURS" to add to the configuration file the desired quantity')
     HOURS_PER_DAY = config['remaining.hours_per_day']
 
     totals: ParsedData = defaultdict(lambda: 0)
@@ -102,7 +102,15 @@ def print_data(data, sum_total, HOURS_PER_DAY, config, offset=10):
         sum_month += sum_week
         work_days += work_week
     remaining_month = sum_month - work_days * HOURS_PER_DAY
-    print(f'Total {sum_month:0.3f} Remaining {remaining_month:0.3f}')
+    if not 'remaining.past_hours' in config:
+        print(f'Total {sum_month:0.3f} Remaining {remaining_month:0.3f}')
+    else: #Esta parte no está funcionando
+        remaining_past = float(config['remaining.past_hours'])
+        remaining = remaining_month + remaining_past
+        if remaining!=remaining_month:
+            print(f'Total {sum_month:0.3f} Remaining this month {remaining_month:0.3f} Remaining past months {remaining_past:0.3f} Total remaining {remaining:0.3f}')
+        else:
+            print(f'Total {sum_month:0.3f} Remaining {remaining_month:0.3f}')
 
 if __name__ == "__main__":
     data, tags, sum_total, HOURS_PER_DAY, config = parse(sys.stdin)
