@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Percentage - Timewarrior report remaining work hours per week and month
+Remaining - Timewarrior report remaining work hours per week and month
 Author: Miguel Crespo and Lucia Moya-Sans
 Usage:
 timew remaining
