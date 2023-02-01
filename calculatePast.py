@@ -106,7 +106,7 @@ def print_data(data, sum_total, HOURS_PER_DAY, START_DATE, config, offset=10):
                         calendarm.append([years,months])
             elif years == now.year:
                 for months in range(1, now.month):
-                    calendar.append([years,months])
+                    calendarm.append([years,months])
         for cm in range(len(calendarm)):
             days_month = calendar.monthcalendar(calendarm[cm][0], calendarm[cm][1])
             if pr:
