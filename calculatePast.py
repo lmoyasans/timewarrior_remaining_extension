@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Percentage - Timewarrior historical report remaining work hours per week and month, to work with main remaining extension
+calculatePast - Timewarrior historical report remaining work hours per week and month, to work with main remaining extension
 Author: Miguel Crespo and Lucia Moya-Sans
 Usage:
 timew calculatePast
@@ -73,7 +73,7 @@ def parse(input_stream: TextIO) -> ParsedData:
         
         if not (now.year == start.year and now.month == start.month):
             #2nd if is failing
-            if (START_DATE.year==start.year and START_DATE.month<=start.month) or START_DATE.year<start.year:
+            if (START_DATE.year==start.year and START_DATE.month<=start.month) or START_DATE.year<=start.year:
                 duration = int((end - start).total_seconds()) / 3600 # Translate to hours
                 day = start.day
                 key = (str(start.year) + "-" +str(start.month) + "-" + str(day))
@@ -97,16 +97,16 @@ def print_data(data, sum_total, HOURS_PER_DAY, START_DATE, config, offset=10):
     if not(now.year == START_DATE.year and now.month == START_DATE.month):
         calendarm = []
         for years in range(START_DATE.year, now.year+1):
-            if years == START_DATE.year:
-                if years != now.year:
-                    for months in range(START_DATE.month,13):
-                        calendarm.append([years,months])
-                else:
-                    for months in range(START_DATE.month,now.month):
-                        calendarm.append([years,months])
-            elif years == now.year:
-                for months in range(1, now.month):
-                    calendarm.append([years,months])
+            START = 1
+            END = 12+1
+            if (START_DATE.year == years):
+                START = START_DATE.month
+            if (now.year == years):
+                END = now.month
+            
+            for months in range(START, END):
+                calendarm.append([years,months])
+
         for cm in range(len(calendarm)):
             days_month = calendar.monthcalendar(calendarm[cm][0], calendarm[cm][1])
             if pr:
@@ -131,7 +131,7 @@ def print_data(data, sum_total, HOURS_PER_DAY, START_DATE, config, offset=10):
                             d='0'
                     if pr:
                         print(d.center(offset), end='')
-                work_week = sum([1 for i in week[:-2] if i != 0 and not 'exclusions.days.' + str(now.year) + '_' + "{0:0=2d}".format(now.month) + '_' + "{0:0=2d}".format(i) in config.keys()])
+                work_week = sum([1 for i in week[:-2] if i != 0 and not 'exclusions.days.' + str(calendarm[cm][0]) + '_' + "{0:0=2d}".format(calendarm[cm][1]) + '_' + "{0:0=2d}".format(i) in config.keys()])
                 total_week = sum_week - HOURS_PER_DAY * work_week
                 if pr:
                     print('| {0:0.3f}'.format(total_week))
